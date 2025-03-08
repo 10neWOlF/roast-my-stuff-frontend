@@ -48,7 +48,7 @@ function RoastMyStuff() {
         setLoadingTextIndex(
           (prevIndex) => (prevIndex + 1) % loadingMessages.length
         );
-      }, 1000);
+      }, 1000); // Change message every 2 seconds
     }
 
     return () => {
@@ -71,7 +71,10 @@ function RoastMyStuff() {
       setError("Please select a valid PDF or DOCX file");
     }
   };
+// new code:
+const API_URL = import.meta.env.VITE_API_URL;
 
+console.log("API URL being used:", API_URL);
   const handleResumeSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -85,17 +88,17 @@ function RoastMyStuff() {
 
     setLoading(true);
     setError("");
-    setLoadingTextIndex(0); 
+    setLoadingTextIndex(0); // Reset the loading text index
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/roast-resume",
+        `${API_URL}/api/roast-resume`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
+      // Navigate to the result page with the result data
       navigate("/result", {
         state: { result: { ...response.data, roastLevel: roastLevel } },
       });
@@ -116,18 +119,18 @@ function RoastMyStuff() {
 
     setLoading(true);
     setError("");
-    setLoadingTextIndex(0); 
+    setLoadingTextIndex(0); // Reset the loading text index
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/roast-project",
+        `${API_URL}/api/roast-project`,
         {
           projectDescription,
           projectLink,
           roastLevel,
         }
       );
-   
+      // Navigate to the result page with the result data
       navigate("/result", {
         state: { result: { ...response.data, roastLevel: roastLevel } },
       });
@@ -143,7 +146,7 @@ function RoastMyStuff() {
     navigate("/");
   };
 
-  
+  // Render loading screen if loading is true
   if (loading) {
     return (
       <div className="min-h-screen font-sans flex flex-col justify-center items-center text-white">
@@ -186,7 +189,7 @@ function RoastMyStuff() {
   return (
     <div className="min-h-screen font-sans flex flex-col text-white">
       <div className="container w-full flex justify-between items-center">
-       
+        {/* Back Button */}
         <button
           onClick={handleGoBack}
           className="flex items-center cursor-pointer gap-2 bg-zinc-900 hover:bg-zinc-800 hover:text-white py-2 px-4 rounded-lg border border-zinc-800 transition-colors text-gray font-medium"
